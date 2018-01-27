@@ -102,6 +102,8 @@ def extract_place_name(lat, lon):
 
 
 def extract_place_coordinates(name):
+    if not name:
+        return None
 
     geolocation_info = lookup(location=name)
 

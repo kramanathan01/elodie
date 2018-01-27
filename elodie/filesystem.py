@@ -242,7 +242,7 @@ class FileSystem(object):
                         metadata['latitude'],
                         metadata['longitude']
                     )
-
+                    print(place_name)
                     location_parts = re.findall('(%[^%]+)', mask)
                     parsed_folder_name = self.parse_mask_for_location(
                         mask,
@@ -290,6 +290,7 @@ class FileSystem(object):
         """
         found = False
         folder_name = mask
+        print(location_parts)
         for loc_part in location_parts:
             # We assume the search returns a tuple of length 2.
             # If not then it's a bad mask in config.ini.

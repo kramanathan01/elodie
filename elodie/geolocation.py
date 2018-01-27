@@ -7,6 +7,7 @@ from past.utils import old_div
 standard_library.install_aliases()  # noqa
 
 from os import path
+import logging
 
 from elodie.config import load_config
 from elodie import constants
@@ -16,11 +17,11 @@ from elodie import openmapsgeo
 
 __PROVIDER__ = None
 __DEFAULT_LOCATION__ = 'Unknown Location'
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
 
 def get_provider():
     global __PROVIDER__
-
     if __PROVIDER__ is not None:
         return __PROVIDER__
 
@@ -33,7 +34,6 @@ def get_provider():
         __PROVIDER__ = config['Provider']['name']
     else:
         __PROVIDER__ = 'MapQuest'
-
     return __PROVIDER__
 
 
@@ -46,11 +46,11 @@ def coordinates_by_name(name):
             'latitude': cached_coordinates[0],
             'longitude': cached_coordinates[1]
         }
+    # If the name is not cached then we go ahead with an API lookup
     provider = get_provider()
 
-    # If the name is not cached then we go ahead with an API lookup
-    if provider is 'GoogleMaps':
-        return None
+    if provider == 'GoogleMaps':
+        return gmapsgeo.extract_place_coordinates(name)
     else:
         return openmapsgeo.extract_place_coordinates(name)
 
@@ -107,7 +107,7 @@ def place_name(lat, lon):
 
     provider = get_provider()
 
-    if provider is 'GoogleMaps':
+    if provider == 'GoogleMaps':
         lookup_place_name = gmapsgeo.extract_place_name(lat, lon)
     else:
         lookup_place_name = openmapsgeo.extract_place_name(lat, lon)

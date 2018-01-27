@@ -6,8 +6,9 @@ import googlemaps
 
 from elodie import constants
 from elodie.config import load_config
-logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
 
 __GOOGLEMAPS_KEY__ = None
 
@@ -95,7 +96,7 @@ def get_gaddress(resultobj):
         return resultobj
 
     # get location
-    gaddress['lat'], gaddress['lon'] = _parse_glocation(resultobj)
+    gaddress['latitude'], gaddress['longitude'] = _parse_glocation(resultobj)
 
     # Build address dictionary
     for gaddress_iter in _parse_gaddress_comps(resultobj, gtypes.keys()):
@@ -116,7 +117,8 @@ def get_gaddress(resultobj):
     # copy sublocality_level_1 to locality
     if 'city' not in gaddress and 'suburb' in gaddress:
             gaddress['city'] = gaddress['suburb']
-    return {k: gaddress[k] for k in ('city', 'state', 'country', 'lat', 'lon')}
+    return {k: gaddress[k] for k in ('city', 'state', 'country',
+                                     'latitude', 'longitude')}
 
 
 def _glookup(**kwargs):
@@ -136,8 +138,8 @@ def _glookup(**kwargs):
 
 def extract_place_name(lat, lon):
     lookup_place_name = {}
-
     geolocation_info = _glookup(lat=lat, lon=lon)
+
     if(geolocation_info is not None):
         for loc in ['city', 'state', 'country']:
             if(loc in geolocation_info):
@@ -146,3 +148,15 @@ def extract_place_name(lat, lon):
                     lookup_place_name['default'] = geolocation_info[loc]
 
     return lookup_place_name
+
+
+def extract_place_coordinates(name):
+    if not name:
+        return None
+
+    geolocation_info = _glookup(location=name)
+
+    if not geolocation_info:
+        return None
+
+    return {k: geolocation_info[k] for k in ('latitude', 'longitude')}
