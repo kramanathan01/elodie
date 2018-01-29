@@ -91,7 +91,6 @@ def get_gaddress(resultobj):
               'country': 'country'}
     gaddress = {}  # Container dict to return matched address_components
 
-    # If get_gresponse returns empty list, don't try to parse it
     if not resultobj:
         return resultobj
 
@@ -100,21 +99,22 @@ def get_gaddress(resultobj):
 
     # Build address dictionary
     for gaddress_iter in _parse_gaddress_comps(resultobj, gtypes.keys()):
-        # Trap empty list returned from call to _parse_glocaddr
+        # Trap empty list returned from call to _parse_gaddress_comps
         if not gaddress_iter:
             break
 
         relevant_types = \
             set(gaddress_iter['types']).intersection(set(gtypes.keys()))
 
+        # use values from matched gtypes['key'] as keys for gaddress dictionary
         gaddress[(gtypes[''.join(str(t) for t in relevant_types)])] = \
             gaddress_iter['long_name']
 
     if not gaddress:  # If empty list return empty list
         return gaddress
-    # When no locality is returned but sublocality_level_1
+    # When no locality (city) is returned but sublocality_level_1 (suburb)
     # is available e.g. (Brooklyn: 40.714224, -73.961452)
-    # copy sublocality_level_1 to locality
+    # copy suburb to city
     if 'city' not in gaddress and 'suburb' in gaddress:
             gaddress['city'] = gaddress['suburb']
     return {k: gaddress[k] for k in ('city', 'state', 'country',
