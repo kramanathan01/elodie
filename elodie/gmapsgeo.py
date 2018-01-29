@@ -121,24 +121,9 @@ def get_gaddress(resultobj):
                                      'latitude', 'longitude')}
 
 
-def _glookup(**kwargs):
-    if(
-        'location' not in kwargs and
-        'lat' not in kwargs and
-        'lon' not in kwargs
-    ):
-        return None
-    addr = {}
-    if('lat' in kwargs and 'lon' in kwargs):
-        addr = get_gaddress(get_address_by_latlng(kwargs['lat'], kwargs['lon']))
-    if ('location') in kwargs:
-        addr = get_gaddress(get_address_by_location(kwargs['location']))
-    return addr
-
-
 def extract_place_name(lat, lon):
     lookup_place_name = {}
-    geolocation_info = _glookup(lat=lat, lon=lon)
+    geolocation_info = get_gaddress(get_address_by_latlng(lat, lon))
 
     if(geolocation_info is not None):
         for loc in ['city', 'state', 'country']:
@@ -154,7 +139,7 @@ def extract_place_coordinates(name):
     if not name:
         return None
 
-    geolocation_info = _glookup(location=name)
+    geolocation_info = get_gaddress(get_address_by_location(name))
 
     if not geolocation_info:
         return None
