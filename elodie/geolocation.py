@@ -20,6 +20,7 @@ __DEFAULT_LOCATION__ = 'Unknown Location'
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
+
 def get_provider():
     global __PROVIDER__
     if __PROVIDER__ is not None:
@@ -51,8 +52,8 @@ def coordinates_by_name(name):
 
     if provider == 'GoogleMaps':
         return gmapsgeo.extract_place_coordinates(name)
-    else:
-        return openmapsgeo.extract_place_coordinates(name)
+
+    return openmapsgeo.extract_place_coordinates(name)
 
 
 def decimal_to_dms(decimal):
