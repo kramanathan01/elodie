@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
 
 import requests
-import urllib.request
-import urllib.parse
-import urllib.error
+
+try:  # Python 3
+    from urllib.parse import urlencode
+except ImportError:  # Python 2
+    from urllib import urlencode
 
 from os import path
 import logging
@@ -30,8 +32,8 @@ def get_key_openmaps():
     if('MapQuest' not in config):
         return None
 
-    __KEY__ = config['MapQuest']['key']
-    return __KEY__
+    __OPENMAPS_KEY__ = config['MapQuest']['key']
+    return __OPENMAPS_KEY__
 
 
 def lookup(**kwargs):
@@ -55,7 +57,7 @@ def lookup(**kwargs):
             path = '/nominatim/v1/reverse.php'
         url = 'http://open.mapquestapi.com%s?%s' % (
                     path,
-                    urllib.parse.urlencode(params)
+                    urlencode(params)
               )
         r = requests.get(url)
         return parse_result(r.json())

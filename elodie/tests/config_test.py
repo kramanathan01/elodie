@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 import os
 import sys
-import unittest 
+import unittest
 
 from mock import patch
 
@@ -12,7 +12,9 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirna
 from elodie import constants
 from elodie.config import load_config
 
+
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+print BASE_PATH
 
 @patch('elodie.config.config_file', '%s/config.ini-sample' % BASE_PATH)
 def test_load_config_singleton_success():
