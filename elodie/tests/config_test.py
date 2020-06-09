@@ -14,7 +14,6 @@ from elodie.config import load_config
 
 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-print BASE_PATH
 
 @patch('elodie.config.config_file', '%s/config.ini-sample' % BASE_PATH)
 def test_load_config_singleton_success():
